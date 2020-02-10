@@ -12,8 +12,7 @@ process.env.SECRET_KEY = 'secret'
 users.post("/register", (req, res) => {
     const today = new Date()
     const userData = {
-        first_name: req.body.first_name,
-        last_name: req.body.last_name,
+        username: req.body.username,
         email: req.body.email,
         password: req.body.password,
         created: today
@@ -52,8 +51,7 @@ users.post('/login', (req, res) => {
                 if (bcrypt.compareSync(req.body.password, user.password)) {
                     const payload = {
                         _id: user._id,
-                        first_name: user.first_name,
-                        last_name: user.last_name,
+                        username: user.username,
                         email: user.email
                     }
                     let token = jwt.sign(payload, process.env.SECRET_KEY, {
@@ -71,5 +69,16 @@ users.post('/login', (req, res) => {
             res.send('error: ' + err)
         })
 })
+    users.route('/testget').get(function (req, res) {
+    console.log('indexroutes.route >>>...Login../get')
+    User.find(function (err, Login){
+        if(err){
+            console.log(err);
+        }
+        else {
+            res.json(Login);
+        }
+    });
+});
 
 module.exports = users
