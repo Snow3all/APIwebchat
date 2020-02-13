@@ -27,7 +27,7 @@ users.post("/register", (req, res) => {
                     userData.password = hash
                     User.create(userData)
                         .then(user => {
-                            res.json({ status: user.email + ' registered' })
+                            res.json({ status: user.email + ' registered',success: true})
                         })
                         .catch(err => {
                             res.send('error: ' + err)
@@ -43,10 +43,14 @@ users.post("/register", (req, res) => {
 })
 
 users.post('/login', (req, res) => {
-    User.findOne({
-        email: req.body.email
-    })
+    console.log(req.body)
+    User.findOne(
+        {
+            email: req.body.email
+        }
+    )
         .then(user => {
+            console.log(user)
             if (user) {
                 if (bcrypt.compareSync(req.body.password, user.password)) {
                     const payload = {
@@ -57,7 +61,8 @@ users.post('/login', (req, res) => {
                     let token = jwt.sign(payload, process.env.SECRET_KEY, {
                         expiresIn: 1440
                     })
-                    res.send(token)
+                    // res.send({token:token})
+                    res.json({ status: 'Login',token:token})
                 } else {
                     res.json({ error: 'User does not exist' })
                 }
